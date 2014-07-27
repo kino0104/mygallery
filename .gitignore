@@ -1,0 +1,2 @@
+# ignores connection settings
+/api/connection.php

@@ -1,0 +1,8 @@
+<?php
+  function get_connection (){
+    $dsn = 'mysql:dbname=mygallery;host=localhost';
+    $user = 'XXXX';
+    $password = 'XXXXXXXXXXXXXXXX';
+    return(new PDO($dsn, $user, $password));
+  }
+?>
