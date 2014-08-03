@@ -34,56 +34,108 @@ $ vi /Applications/XAMPP/etc/httpd.conf
 
 http://localhost/phpmyadmin/ にアクセスし、さっき作った root のパスワードでログインし、データベース名は `mygallery` 、照合順序は `utf8_general_ci` でデータベース作成。
 
-左にできた `mygallery` データベースを選択し、 SQL を押し、下記クエリを実行する。
+左にできた `mygallery` データベースを選択し、 SQL を押し、 sql/ ディレクトリの中にある SQL ファイルを日付順に実行する。
 
-```sql
-CREATE TABLE photos (
-  id VARCHAR(100) PRIMARY KEY,
-  high_image_url VARCHAR(256) NOT NULL,
-  high_image_width INTEGER NOT NULL,
-  high_image_height INTEGER NOT NULL,
-  low_image_url VARCHAR(256) NOT NULL,
-  low_image_width INTEGER NOT NULL,
-  low_image_height INTEGER NOT NULL,
-  sort INTEGER,
-  created_at DATETIME NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
-  INDEX idx_sort(sort)
-);
-INSERT INTO photos (
-  id,
-  high_image_url, high_image_width, high_image_height,
-  low_image_url, low_image_width, low_image_height,
-  sort, created_at
-) VALUES
-(
-  '730037546194686809_222717163',
-  'http://scontent-a.cdninstagram.com/hphotos-xap1/t51.2885-15/10424493_412665722206682_898489326_n.jpg', 640, 640,
-  'http://scontent-a.cdninstagram.com/hphotos-xap1/t51.2885-15/10424493_412665722206682_898489326_a.jpg', 306, 306,
-  1, CURRENT_TIMESTAMP
-),
-(
-  '714820211599070030_222717163',
-  'http://scontent-a.cdninstagram.com/hphotos-xaf1/t51.2885-15/10299696_462869223856887_1450111075_n.jpg', 640, 640,
-  'http://scontent-a.cdninstagram.com/hphotos-xaf1/t51.2885-15/10299696_462869223856887_1450111075_a.jpg', 306, 306,
-  2, CURRENT_TIMESTAMP
-),
-(
-  '697744872909689299_222717163',
-  'http://scontent-a.cdninstagram.com/hphotos-xfa1/t51.2885-15/914305_497904653666317_1866275385_n.jpg', 640, 640,
-  'http://scontent-a.cdninstagram.com/hphotos-xfa1/t51.2885-15/914305_497904653666317_1866275385_a.jpg', 306, 306,
-  3, CURRENT_TIMESTAMP
-),
-(
-  '693299813644619793_222717163',
-  'http://scontent-b.cdninstagram.com/hphotos-xap1/t51.2885-15/1596981_624027450998721_1583769907_n.jpg', 640, 640,
-  'http://scontent-b.cdninstagram.com/hphotos-xap1/t51.2885-15/1596981_624027450998721_1583769907_a.jpg', 306, 306,
-  4, CURRENT_TIMESTAMP
-),
-(
-  '692690296816915142_222717163',
-  'http://scontent-a.cdninstagram.com/hphotos-xpa1/t51.2885-15/10011287_262808207223875_883625916_n.jpg', 640, 640,
-  'http://scontent-a.cdninstagram.com/hphotos-xpa1/t51.2885-15/10011287_262808207223875_883625916_a.jpg', 306, 306,
-  5, CURRENT_TIMESTAMP
-);
+## API 仕様
+
+### 写真一覧取得
+
+```
+GET /api/photos.php
+```
+
+* user_id: どのユーザの写真一覧を取りたいか
+
+#### 例
+
+```bash
+$ curl 'http://localhost/api/photos.php?user_id=222717163' | jq .
+{
+  "results": [
+    {
+      "low_image": {
+        "height": "306",
+        "width": "306",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xfa1/t51.2885-15/914305_497904653666317_1866275385_a.jpg"
+      },
+      "high_image": {
+        "height": "640",
+        "width": "640",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xfa1/t51.2885-15/914305_497904653666317_1866275385_n.jpg"
+      },
+      "id": "697744872909689299_222717163"
+    },
+    {
+      "low_image": {
+        "height": "306",
+        "width": "306",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xap1/t51.2885-15/10424493_412665722206682_898489326_a.jpg"
+      },
+      "high_image": {
+        "height": "640",
+        "width": "640",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xap1/t51.2885-15/10424493_412665722206682_898489326_n.jpg"
+      },
+      "id": "730037546194686809_222717163"
+    },
+    {
+      "low_image": {
+        "height": "306",
+        "width": "306",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xpa1/t51.2885-15/10011287_262808207223875_883625916_a.jpg"
+      },
+      "high_image": {
+        "height": "640",
+        "width": "640",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xpa1/t51.2885-15/10011287_262808207223875_883625916_n.jpg"
+      },
+      "id": "692690296816915142_222717163"
+    },
+    {
+      "low_image": {
+        "height": "306",
+        "width": "306",
+        "url": "http://scontent-b.cdninstagram.com/hphotos-xap1/t51.2885-15/1596981_624027450998721_1583769907_a.jpg"
+      },
+      "high_image": {
+        "height": "640",
+        "width": "640",
+        "url": "http://scontent-b.cdninstagram.com/hphotos-xap1/t51.2885-15/1596981_624027450998721_1583769907_n.jpg"
+      },
+      "id": "693299813644619793_222717163"
+    },
+    {
+      "low_image": {
+        "height": "306",
+        "width": "306",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xaf1/t51.2885-15/10299696_462869223856887_1450111075_a.jpg"
+      },
+      "high_image": {
+        "height": "640",
+        "width": "640",
+        "url": "http://scontent-a.cdninstagram.com/hphotos-xaf1/t51.2885-15/10299696_462869223856887_1450111075_n.jpg"
+      },
+      "id": "714820211599070030_222717163"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+### 順序更新
+
+```
+POST /api/sort.php
+```
+
+* sid: 更新したいユーザの users テーブルの sid の値を指定。指定したユーザ以外のデータは更新できない
+* photos: photos テーブルの id の順序を , 区切りで指定。次から photos.php が指定した順序で返すようになる。
+
+#### 例
+
+```bash
+$ curl -d 'sid=SID' -d 'photos=697744872909689299_222717163,730037546194686809_222717163' http://localhost/api/sort.php | jq .
+{
+  "status": "OK"
+}
 ```
