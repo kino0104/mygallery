@@ -2,11 +2,12 @@
   header('Content-Type: text/javascript; charset=utf-8');
   include('connection.php');
 
+  $user = $_SESSION['user']['id'];
   $sql = 'SELECT * FROM photos WHERE user_id = ? ORDER BY sort;';
-  $results = array();
+  $reuslts = array();
   $dbh = get_connection();
   $stmt = $dbh->prepare($sql);
-  $stmt->execute(array($_GET['user_id']));
+  $stmt->execute(array($user));
 
   while ($row = $stmt->fetch()) {
     $results[] = array(
