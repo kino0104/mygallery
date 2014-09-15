@@ -50,7 +50,7 @@ if(empty($_SESSION['user'])){
 	</form>
 
 	<!-- galleryページ生成処理へ -->
-	<form class="gform" action="resister.php" method="get">
+	<form class="gform" action="register.php" method="get">
 		<input type="submit" id="submit" value="登録" />
 	</form>
 	
