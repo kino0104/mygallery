@@ -76,15 +76,17 @@ if(empty($_GET['code'])){
 		$url = "https://api.instagram.com/v1/users/self/media/recent/?access_token=".$access_token."&count=-1";
 		$json = file_get_contents($url);
 		$json = json_decode($json);
+		//var_dump($json);
 
-		$stmt = $dbh->prepare("replace into photos (id, user_id, high_image_url, high_image_width, high_image_height,
+		$stmt = $dbh->prepare("replace into photos (id, user_id, username, high_image_url, high_image_width, high_image_height,
 		low_image_url, low_image_width, low_image_height, created_at, updated_at) values
-		(:id, :user_id, :high_image_url, :high_image_width, :high_image_height,
+		(:id, :user_id, :username, :high_image_url, :high_image_width, :high_image_height,
 		:low_image_url, :low_image_width, :low_image_height, now(), now())");
 
 		foreach($json->data as $data){
 		$stmt->bindParam(":id", $id);
 		$stmt->bindParam(":user_id", $user_id);
+		$stmt->bindParam(":username", $username);
 		$stmt->bindParam(":high_image_url", $high_image_url);
 		$stmt->bindParam(":high_image_width", $high_image_width);
 		$stmt->bindParam(":high_image_height", $high_image_height);
@@ -95,7 +97,9 @@ if(empty($_GET['code'])){
 		$id = $data->id;
 		//var_dump($id);
 		$user_id = $data->user->id;
-		//var_dump($user_id);
+		$username = $data->user->username;
+		//var_dump($username);
+		//exit;
 		$high_image_url = $data->images->standard_resolution->url;
 		//var_dump($high_image_url);
 		$high_image_width = $data->images->standard_resolution->width;
